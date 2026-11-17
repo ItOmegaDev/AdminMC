@@ -65,7 +65,7 @@ public class Config {
     }
 
     public String prefix() {
-        String p = config.getString("prefix", "&aOmegaSMP");
+        String p = config.getString("prefix", "&5OmegaMC");
         return p.replace("&", "§");
     }
 

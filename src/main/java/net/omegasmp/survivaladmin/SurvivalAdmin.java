@@ -59,10 +59,11 @@ public final class SurvivalAdmin extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
         Bukkit.getPluginManager().registerEvents(this.commandBlocker, this);
+        Bukkit.getPluginManager().registerEvents(new TabCompleteBlocker(this), this);
 
         new CommandRegistrar(this).registerAll();
 
-        getLogger().info("SurvivalAdmin v2.1.0 enabled — Made by Omega (@ItOmega)");
+        getLogger().info("SurvivalAdmin v2.2.0 enabled — Made by Omega (@ItOmega)");
     }
 
     @Override
