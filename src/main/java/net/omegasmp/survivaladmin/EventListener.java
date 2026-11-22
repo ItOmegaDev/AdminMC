@@ -5,7 +5,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -33,6 +35,7 @@ public class EventListener implements Listener {
         plugin.getRoleManager().migrateOnJoin(player);
         // Hide already vanished players from the newcomer.
         plugin.getVanishManager().applyTo(player);
+        plugin.getWorldEventManager().onJoin(player);
         String role = plugin.getRoleManager().getRole(player);
         if (plugin.getVanishManager().isVanished(player)) {
             event.setJoinMessage(null);
@@ -63,6 +66,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        plugin.getWorldEventManager().onQuit(player);
         if (plugin.getVanishManager().isVanished(player)) {
             event.setQuitMessage(null);
             plugin.getVanishManager().forget(player);
@@ -80,6 +84,7 @@ public class EventListener implements Listener {
         }
         Player killer = player.getKiller();
         if (killer != null) {
+            plugin.getQuestManager().addProgress(killer, "kill", event.getEntity().getType().name(), 1);
             event.setDeathMessage(plugin.getConfigManager().msg("kill")
                     .replace("{player}", player.getName())
                     .replace("{killer}", killer.getName()));
@@ -109,6 +114,19 @@ public class EventListener implements Listener {
         Bukkit.broadcastMessage(plugin.getConfigManager().msg("advancement")
                 .replace("{player}", player.getName())
                 .replace("{advancement}", name));
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (event.isCancelled()) return;
+        plugin.getQuestManager().addProgress(event.getPlayer(), "mine", event.getBlock().getType().name(), 1);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPickup(EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        int amount = event.getItem().getItemStack().getAmount();
+        plugin.getQuestManager().addProgress(player, "collect", event.getItem().getItemStack().getType().name(), amount);
     }
 
     @EventHandler

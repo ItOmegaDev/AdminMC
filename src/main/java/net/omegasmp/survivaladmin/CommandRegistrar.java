@@ -31,6 +31,12 @@ public class CommandRegistrar {
         // Vanilla /list replacement that hides vanished players
         register("list", new ListCommand(plugin));
 
+        // World events + quests
+        register("event", new EventCommand(plugin));
+        register("events", new EventCommand(plugin));
+        register("quests", new QuestsCommand(plugin));
+        register("quest", new QuestsCommand(plugin));
+
         // Sudo command (owner-level)
         register("sudo", new SudoCommand(plugin));
 

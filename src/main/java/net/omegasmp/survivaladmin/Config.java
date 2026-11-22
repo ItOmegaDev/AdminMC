@@ -64,6 +64,10 @@ public class Config {
         return config.getBoolean(path, def);
     }
 
+    public double getDouble(String path, double def) {
+        return config.getDouble(path, def);
+    }
+
     public String prefix() {
         String p = config.getString("prefix", "&5OmegaMC");
         return p.replace("&", "§");

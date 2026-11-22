@@ -49,6 +49,8 @@ public final class SurvivalAdmin extends JavaPlugin {
     private AnnouncementManager announcementManager;
     private VanishManager vanishManager;
     private AdminGUI adminGUI;
+    private WorldEventManager worldEventManager;
+    private QuestManager questManager;
 
     // Frozen players (in-memory, cleared on restart)
     private final Set<java.util.UUID> frozen = new java.util.HashSet<>();
@@ -68,10 +70,13 @@ public final class SurvivalAdmin extends JavaPlugin {
         this.announcementManager = new AnnouncementManager(this);
         this.vanishManager = new VanishManager(this);
         this.adminGUI = new AdminGUI(this);
+        this.worldEventManager = new WorldEventManager(this);
+        this.questManager = new QuestManager(this);
 
         Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
         Bukkit.getPluginManager().registerEvents(this.commandBlocker, this);
         Bukkit.getPluginManager().registerEvents(new TabCompleteBlocker(this), this);
+        Bukkit.getPluginManager().registerEvents(this.worldEventManager, this);
         Bukkit.getPluginManager().registerEvents(new org.bukkit.event.Listener() {
             @org.bukkit.event.EventHandler
             public void onSignChange(org.bukkit.event.block.SignChangeEvent e) {
@@ -115,7 +120,7 @@ public final class SurvivalAdmin extends JavaPlugin {
             if (vanishManager != null) vanishManager.tick();
         }, 40L, 40L);
 
-        getLogger().info("SurvivalAdmin v2.4.0 enabled - Made by Omega (@ItOmega)");
+        getLogger().info("SurvivalAdmin v2.5.0 enabled - Made by Omega (@ItOmega)");
     }
 
     @Override
@@ -141,6 +146,8 @@ public final class SurvivalAdmin extends JavaPlugin {
     public AnnouncementManager getAnnouncementManager() { return announcementManager; }
     public VanishManager getVanishManager() { return vanishManager; }
     public AdminGUI getAdminGUI() { return adminGUI; }
+    public WorldEventManager getWorldEventManager() { return worldEventManager; }
+    public QuestManager getQuestManager() { return questManager; }
 
     private void handleGuiAction(Player player, String action) {
         if (action.equals("close")) {

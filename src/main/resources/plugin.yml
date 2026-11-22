@@ -1,5 +1,5 @@
 name: SurvivalAdmin
-version: 2.4.0
+version: 2.5.0
 main: net.omegasmp.survivaladmin.SurvivalAdmin
 api-version: '1.21'
 author: Omega
@@ -143,6 +143,22 @@ commands:
     description: View player ender chest
     usage: /endersee <player>
     permission: survivaladmin.staff
+  event:
+    description: Manage world events (blood moon, world boss)
+    usage: /event <bloodmoon|boss> [start|stop]
+    permission: survivaladmin.staff
+  events:
+    description: Manage world events (alias)
+    usage: /events <bloodmoon|boss> [start|stop]
+    permission: survivaladmin.staff
+  quests:
+    description: View and claim quests
+    usage: /quests [list|claim <id>]
+    permission: survivaladmin.user
+  quest:
+    description: View and claim quests (alias)
+    usage: /quest [list|claim <id>]
+    permission: survivaladmin.user
 
 permissions:
   survivaladmin.owner:
@@ -217,3 +233,9 @@ permissions:
   survivaladmin.sudo:
     description: Execute commands as other players
     default: false
+  survivaladmin.event:
+    description: Manage world events
+    default: false
+  survivaladmin.quests:
+    description: Use quests
+    default: true

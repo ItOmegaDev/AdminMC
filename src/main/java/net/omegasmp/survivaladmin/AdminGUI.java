@@ -238,6 +238,16 @@ public class AdminGUI {
         item(inv, act, 43, Material.ENDER_EYE, "&5&lСпостерігач", "cmd:gm 3",
                 "&7Режим спостерігача");
 
+        item(inv, act, 32, Material.REDSTONE_TORCH, "&4&lКривавий місяць", "cmd:event bloodmoon",
+                "&7Перемкнути івент",
+                "&7Посилені моби, подвійний дроп");
+        item(inv, act, 34, Material.WITHER_SKELETON_SKULL, "&c&lСвітовий бос", "cmd:event boss",
+                "&7Викликати боса",
+                "&7з нагородами");
+        item(inv, act, 36, Material.BOOK, "&6&lКвести", "cmd:quests",
+                "&7Список квестів",
+                "&7та отримання нагород");
+
         footer(p, inv, act, "main");
         show(p, "world", inv, act);
     }
