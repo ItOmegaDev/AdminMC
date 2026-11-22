@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
@@ -14,6 +15,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 
 import java.util.List;
 
@@ -29,8 +31,14 @@ public class EventListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         plugin.getRoleManager().migrateOnJoin(player);
+        // Hide already vanished players from the newcomer.
+        plugin.getVanishManager().applyTo(player);
         String role = plugin.getRoleManager().getRole(player);
-        event.setJoinMessage(plugin.getConfigManager().msgRaw("join").replace("{player}", rolePrefix(role) + player.getName()));
+        if (plugin.getVanishManager().isVanished(player)) {
+            event.setJoinMessage(null);
+        } else {
+            event.setJoinMessage(plugin.getConfigManager().msgRaw("join").replace("{player}", rolePrefix(role) + player.getName()));
+        }
 
         // Alt detection
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -55,12 +63,21 @@ public class EventListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        if (plugin.getVanishManager().isVanished(player)) {
+            event.setQuitMessage(null);
+            plugin.getVanishManager().forget(player);
+            return;
+        }
         event.setQuitMessage(plugin.getConfigManager().msgRaw("quit").replace("{player}", player.getName()));
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
+        if (plugin.getVanishManager().isVanished(player)) {
+            event.setDeathMessage(null);
+            return;
+        }
         Player killer = player.getKiller();
         if (killer != null) {
             event.setDeathMessage(plugin.getConfigManager().msg("kill")
@@ -74,6 +91,11 @@ public class EventListener implements Listener {
     @EventHandler
     public void onKick(PlayerKickEvent event) {
         Player player = event.getPlayer();
+        if (plugin.getVanishManager().isVanished(player)) {
+            event.setLeaveMessage(null);
+            plugin.getVanishManager().forget(player);
+            return;
+        }
         event.setLeaveMessage(plugin.getConfigManager().msg("kick").replace("{player}", player.getName()));
     }
 
@@ -81,6 +103,7 @@ public class EventListener implements Listener {
     public void onAdvancement(PlayerAdvancementDoneEvent event) {
         if (event.getAdvancement().getKey().getKey().startsWith("recipes/")) return;
         Player player = event.getPlayer();
+        if (plugin.getVanishManager().isVanished(player)) return;
         String name = event.getAdvancement().getDisplay() == null ? event.getAdvancement().getKey().getKey()
                 : event.getAdvancement().getDisplay().title().toString();
         Bukkit.broadcastMessage(plugin.getConfigManager().msg("advancement")
@@ -143,6 +166,32 @@ public class EventListener implements Listener {
                 && event.getFrom().getBlockY() == event.getTo().getBlockY()
                 && event.getFrom().getBlockZ() == event.getTo().getBlockZ()) return;
         event.setTo(event.getFrom());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onTarget(EntityTargetLivingEntityEvent event) {
+        if (!(event.getTarget() instanceof Player player)) return;
+        if (plugin.getVanishManager().isVanished(player)) {
+            event.setTarget(null);
+            event.setCancelled(true);
+        }
+    }
+
+    @SuppressWarnings("removal")
+    @EventHandler
+    public void onPing(ServerListPingEvent event) {
+        if (plugin.getVanishManager().count() == 0) return;
+        try {
+            java.util.Iterator<Player> it = event.iterator();
+            while (it.hasNext()) {
+                Player sample = it.next();
+                if (plugin.getVanishManager().isVanished(sample)) {
+                    it.remove();
+                }
+            }
+        } catch (Throwable ignored) {
+            // Sample list is not mutable on this server version; nothing to do.
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

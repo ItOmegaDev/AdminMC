@@ -53,6 +53,7 @@ public class TabCompleteBlocker implements Listener {
         boolean topLevel = parts.length <= 1;
 
         Set<String> allowed = allowedCommands(player);
+        Set<String> hiddenNames = hiddenVanishedNames(player);
 
         try {
             if (topLevel) {
@@ -69,6 +70,7 @@ public class TabCompleteBlocker implements Listener {
                             if (!isPermissionAllowed(player, suggestion)) continue;
                         }
                         if (!suggestion.toLowerCase(Locale.ROOT).startsWith(query.toLowerCase(Locale.ROOT))) continue;
+                        if (hiddenNames.contains(suggestion.toLowerCase(Locale.ROOT))) continue;
                         filteredStrings.add(suggestion);
                     }
                 }
@@ -84,6 +86,7 @@ public class TabCompleteBlocker implements Listener {
                         String base = normalize(suggestion);
                         if (!allowed.contains(base) && !isPermissionAllowed(player, suggestion)) continue;
                         if (!suggestion.toLowerCase(Locale.ROOT).startsWith(query.toLowerCase(Locale.ROOT))) continue;
+                        if (hiddenNames.contains(suggestion.toLowerCase(Locale.ROOT))) continue;
                         filteredCompletions.add(AsyncTabCompleteEvent.Completion.completion(suggestion, completion.tooltip()));
                     }
                 }
@@ -92,9 +95,47 @@ public class TabCompleteBlocker implements Listener {
                 // Clear argument suggestions for commands the player may not use.
                 event.setCompletions(new ArrayList<>());
                 event.completions(new ArrayList<>());
+            } else if (!hiddenNames.isEmpty()) {
+                scrubHidden(event, hiddenNames);
             }
         } catch (Throwable ignored) {
             // Never let tab completion filtering break the event pipeline.
+        }
+    }
+
+    /** Names of vanished players the viewer must not see in suggestions. */
+    private Set<String> hiddenVanishedNames(Player player) {
+        Set<String> hidden = new LinkedHashSet<>();
+        VanishManager vanish = plugin.getVanishManager();
+        if (vanish == null || vanish.count() == 0) return hidden;
+        if (vanish.canSeeVanished(player)) return hidden;
+        for (Player online : Bukkit.getOnlinePlayers()) {
+            if (vanish.isVanished(online)) hidden.add(online.getName().toLowerCase(Locale.ROOT));
+        }
+        return hidden;
+    }
+
+    private void scrubHidden(AsyncTabCompleteEvent event, Set<String> hidden) {
+        List<String> strings = event.getCompletions();
+        if (strings != null && !strings.isEmpty()) {
+            List<String> kept = new ArrayList<>();
+            for (String suggestion : strings) {
+                if (suggestion == null) continue;
+                if (hidden.contains(suggestion.toLowerCase(Locale.ROOT))) continue;
+                kept.add(suggestion);
+            }
+            event.setCompletions(kept);
+        }
+        List<AsyncTabCompleteEvent.Completion> completions = event.completions();
+        if (completions != null && !completions.isEmpty()) {
+            List<AsyncTabCompleteEvent.Completion> kept = new ArrayList<>();
+            for (AsyncTabCompleteEvent.Completion completion : completions) {
+                if (completion == null) continue;
+                String suggestion = completion.suggestion();
+                if (suggestion != null && hidden.contains(suggestion.toLowerCase(Locale.ROOT))) continue;
+                kept.add(completion);
+            }
+            event.completions(kept);
         }
     }
 

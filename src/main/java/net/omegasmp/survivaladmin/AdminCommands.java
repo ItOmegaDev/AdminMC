@@ -239,26 +239,8 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             player.sendMessage(plugin.getConfigManager().msg("no-permission"));
             return;
         }
-        boolean newState = !player.hasMetadata("survivaladmin_vanished");
-        if (newState) {
-            player.setMetadata("survivaladmin_vanished", new org.bukkit.metadata.FixedMetadataValue(plugin, true));
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (!p.equals(player)) {
-                    p.hidePlayer(plugin, player);
-                }
-            }
-            player.setPlayerListName("");
-            player.sendMessage(plugin.getConfigManager().msg("vanished-on"));
-        } else {
-            player.removeMetadata("survivaladmin_vanished", plugin);
-            for (Player p : Bukkit.getOnlinePlayers()) {
-                if (!p.equals(player)) {
-                    p.showPlayer(plugin, player);
-                }
-            }
-            player.setPlayerListName(player.getName());
-            player.sendMessage(plugin.getConfigManager().msg("vanished-off"));
-        }
+        boolean vanished = plugin.getVanishManager().toggle(player);
+        player.sendMessage(plugin.getConfigManager().msg(vanished ? "vanished-on" : "vanished-off"));
     }
 
     // ---- kick ----

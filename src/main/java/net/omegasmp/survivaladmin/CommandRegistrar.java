@@ -28,6 +28,9 @@ public class CommandRegistrar {
         // Anti-cheat check command
         register("check", new CheckCommand(plugin));
 
+        // Vanilla /list replacement that hides vanished players
+        register("list", new ListCommand(plugin));
+
         // Sudo command (owner-level)
         register("sudo", new SudoCommand(plugin));
 

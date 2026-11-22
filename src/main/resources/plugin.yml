@@ -31,6 +31,10 @@ commands:
     description: SurvivalAdmin help
     usage: /help
     permission: survivaladmin.user
+  list:
+    description: List online players (hides vanished players)
+    usage: /list
+    permission: survivaladmin.user
   tp:
     description: Teleport to player
     usage: /tp <player>

@@ -168,7 +168,9 @@ public class AdminGUI {
         item(inv, act, 30, Material.OAK_SIGN, "&6&lОголошення", "cmd:usage-broadcast",
                 "&7Написати від імені сервера", "&8/broadcast <текст>");
         item(inv, act, 31, Material.SHIELD, "&b&lВаниш", "cmd:vanish",
-                "&7Увімкнути або вимкнути невидимість");
+                "&7Увімкнути або вимкнути невидимість",
+                "&7та приховування зі списків",
+                "&8Статус: " + onOff(plugin.getVanishManager().isVanished(p)));
         item(inv, act, 32, Material.COMMAND_BLOCK, "&4&lSudo", "cmd:usage-sudo",
                 "&7Виконати команду від імені гравця", "&8/sudo <гравець> <команда>");
         item(inv, act, 33, Material.PLAYER_HEAD, "&e&lГравці", "open:players",

@@ -47,6 +47,7 @@ public final class SurvivalAdmin extends JavaPlugin {
     private AltDetectionManager altDetectionManager;
     private ChatManager chatManager;
     private AnnouncementManager announcementManager;
+    private VanishManager vanishManager;
     private AdminGUI adminGUI;
 
     // Frozen players (in-memory, cleared on restart)
@@ -65,6 +66,7 @@ public final class SurvivalAdmin extends JavaPlugin {
         this.altDetectionManager = new AltDetectionManager(this);
         this.chatManager = new ChatManager(this);
         this.announcementManager = new AnnouncementManager(this);
+        this.vanishManager = new VanishManager(this);
         this.adminGUI = new AdminGUI(this);
 
         Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
@@ -132,6 +134,7 @@ public final class SurvivalAdmin extends JavaPlugin {
     public AltDetectionManager getAltDetectionManager() { return altDetectionManager; }
     public ChatManager getChatManager() { return chatManager; }
     public AnnouncementManager getAnnouncementManager() { return announcementManager; }
+    public VanishManager getVanishManager() { return vanishManager; }
     public AdminGUI getAdminGUI() { return adminGUI; }
 
     private void handleGuiAction(Player player, String action) {
