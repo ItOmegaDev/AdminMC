@@ -17,7 +17,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 /**
- * SurvivalAdmin — Professional administration plugin for Minecraft Survival servers.
+ * SurvivalAdmin - Professional administration plugin for Minecraft Survival servers.
  *
  * Features:
  * - Role-based access control (user, staff, owner) with permission inheritance
@@ -78,11 +78,16 @@ public final class SurvivalAdmin extends JavaPlugin {
             @org.bukkit.event.EventHandler
             public void onInventoryClick(org.bukkit.event.inventory.InventoryClickEvent e) {
                 if (!(e.getWhoClicked() instanceof Player player)) return;
-                if (!adminGUI.isOpen(player)) {
+                if (!adminGUI.isOpen(player) || !adminGUI.isCurrent(player, e.getView().getTopInventory())) {
                     return;
                 }
                 e.setCancelled(true);
-                getLogger().info("GUI click by " + player.getName() + " slot=" + e.getRawSlot());
+                if (!roleManager.isStaff(player)) {
+                    adminGUI.close(player);
+                    player.closeInventory();
+                    player.sendMessage(config.msg("no-permission"));
+                    return;
+                }
                 int slot = e.getRawSlot();
                 if (slot < 0 || slot >= e.getInventory().getSize()) return;
                 Map<Integer, String> acts = adminGUI.currentActions(player);
@@ -93,7 +98,9 @@ public final class SurvivalAdmin extends JavaPlugin {
             @org.bukkit.event.EventHandler
             public void onInventoryClose(org.bukkit.event.inventory.InventoryCloseEvent e) {
                 if (e.getPlayer() instanceof Player player) {
-                    if (adminGUI.isOpen(player)) adminGUI.close(player);
+                    // Only drop the session when the page itself is closed, not when a
+                    // new page replaced it (the close event of the old page can arrive late).
+                    if (adminGUI.isCurrent(player, e.getInventory())) adminGUI.close(player);
                 }
             }
         }, this);
@@ -101,7 +108,7 @@ public final class SurvivalAdmin extends JavaPlugin {
         new CommandRegistrar(this).registerAll();
         announcementManager.start();
 
-        getLogger().info("SurvivalAdmin v2.4.0 enabled — Made by Omega (@ItOmega)");
+        getLogger().info("SurvivalAdmin v2.4.0 enabled - Made by Omega (@ItOmega)");
     }
 
     @Override
@@ -143,6 +150,7 @@ public final class SurvivalAdmin extends JavaPlugin {
                 case "anticheat" -> adminGUI.openAnticheat(player);
                 case "chat" -> adminGUI.openChat(player);
                 case "server" -> adminGUI.openServer(player);
+                case "roles" -> adminGUI.openRoles(player);
             }
             return;
         }
@@ -158,6 +166,14 @@ public final class SurvivalAdmin extends JavaPlugin {
             if (cmd.equals("usage-getoff")) { player.sendMessage("§cUsage: /getoff <player> <time> [reason]"); return; }
             if (cmd.equals("usage-mute")) { player.sendMessage("§cUsage: /mute <player> [time] [reason]"); return; }
             if (cmd.equals("usage-freeze")) { player.sendMessage("§cUsage: /freeze <player>"); return; }
+            if (cmd.equals("usage-unfreeze")) { player.sendMessage("§cUsage: /unfreeze <player>"); return; }
+            if (cmd.equals("usage-tempmute")) { player.sendMessage("§cUsage: /tempmute <player> <time> [reason]"); return; }
+            if (cmd.equals("usage-broadcast")) { player.sendMessage("§cUsage: /broadcast <text>"); return; }
+            if (cmd.equals("usage-sudo")) { player.sendMessage("§cUsage: /sudo <player> <command>"); return; }
+            if (cmd.equals("usage-staff")) { player.sendMessage("§cUsage: /staff <player>"); return; }
+            if (cmd.equals("usage-unstaff")) { player.sendMessage("§cUsage: /unstaff <player>"); return; }
+            if (cmd.equals("usage-owner")) { player.sendMessage("§cUsage: /owner <player>"); return; }
+            if (cmd.equals("usage-unowner")) { player.sendMessage("§cUsage: /unowner <player>"); return; }
             if (cmd.equals("usage-warn")) { player.sendMessage("§cUsage: /warn <player> <reason>"); return; }
             if (cmd.equals("unmute")) { player.sendMessage("§cUsage: /unmute <player>"); return; }
             if (cmd.equals("tphere")) { player.sendMessage("§cUsage: /tphere <player>"); return; }
