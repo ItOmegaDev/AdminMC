@@ -115,10 +115,6 @@ commands:
     description: Check a player for hacks
     usage: /check <player>
     permission: survivaladmin.staff
-  checkhacks:
-    description: Check a player for hacks (alias)
-    usage: /checkhacks <player>
-    permission: survivaladmin.staff
 
 permissions:
   survivaladmin.owner:
