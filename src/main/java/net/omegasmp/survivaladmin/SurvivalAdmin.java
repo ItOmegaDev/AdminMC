@@ -44,6 +44,10 @@ public final class SurvivalAdmin extends JavaPlugin {
     private MuteManager muteManager;
     private WarnManager warnManager;
     private AntiCheatManager antiCheatManager;
+    private AltDetectionManager altDetectionManager;
+    private ChatManager chatManager;
+    private AnnouncementManager announcementManager;
+    private AdminGUI adminGUI;
 
     // Frozen players (in-memory, cleared on restart)
     private final Set<java.util.UUID> frozen = new java.util.HashSet<>();
@@ -58,6 +62,10 @@ public final class SurvivalAdmin extends JavaPlugin {
         this.muteManager = new MuteManager(this);
         this.warnManager = new WarnManager(this);
         this.antiCheatManager = new AntiCheatManager(this);
+        this.altDetectionManager = new AltDetectionManager(this);
+        this.chatManager = new ChatManager(this);
+        this.announcementManager = new AnnouncementManager(this);
+        this.adminGUI = new AdminGUI(this);
 
         Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
         Bukkit.getPluginManager().registerEvents(this.commandBlocker, this);
@@ -67,9 +75,28 @@ public final class SurvivalAdmin extends JavaPlugin {
             public void onSignChange(org.bukkit.event.block.SignChangeEvent e) {
                 if (antiCheatManager != null) antiCheatManager.handleSignChange(e);
             }
+            @org.bukkit.event.EventHandler
+            public void onInventoryClick(org.bukkit.event.inventory.InventoryClickEvent e) {
+                if (!(e.getWhoClicked() instanceof Player player)) return;
+                if (!adminGUI.isOpen(player)) return;
+                e.setCancelled(true);
+                int slot = e.getRawSlot();
+                if (slot < 0 || slot >= e.getInventory().getSize()) return;
+                Map<Integer, String> acts = adminGUI.currentActions(player);
+                String action = acts.get(slot);
+                if (action == null) return;
+                handleGuiAction(player, action);
+            }
+            @org.bukkit.event.EventHandler
+            public void onInventoryClose(org.bukkit.event.inventory.InventoryCloseEvent e) {
+                if (e.getPlayer() instanceof Player player) {
+                    if (adminGUI.isOpen(player)) adminGUI.close(player);
+                }
+            }
         }, this);
 
         new CommandRegistrar(this).registerAll();
+        announcementManager.start();
 
         getLogger().info("SurvivalAdmin v2.4.0 enabled — Made by Omega (@ItOmega)");
     }
@@ -92,6 +119,63 @@ public final class SurvivalAdmin extends JavaPlugin {
     public MuteManager getMuteManager() { return muteManager; }
     public WarnManager getWarnManager() { return warnManager; }
     public AntiCheatManager getAntiCheatManager() { return antiCheatManager; }
+    public AltDetectionManager getAltDetectionManager() { return altDetectionManager; }
+    public ChatManager getChatManager() { return chatManager; }
+    public AnnouncementManager getAnnouncementManager() { return announcementManager; }
+    public AdminGUI getAdminGUI() { return adminGUI; }
+
+    private void handleGuiAction(Player player, String action) {
+        if (action.equals("close")) {
+            player.closeInventory();
+            return;
+        }
+        if (action.startsWith("open:")) {
+            String t = action.substring(5);
+            switch (t) {
+                case "main" -> adminGUI.openMain(player);
+                case "moderation" -> adminGUI.openModeration(player);
+                case "teleport" -> adminGUI.openTeleport(player);
+                case "world" -> adminGUI.openWorld(player);
+                case "players" -> adminGUI.openPlayers(player);
+                case "anticheat" -> adminGUI.openAnticheat(player);
+                case "chat" -> adminGUI.openChat(player);
+                case "server" -> adminGUI.openServer(player);
+            }
+            return;
+        }
+        if (action.startsWith("select:")) {
+            adminGUI.handleSelect(player, action);
+            return;
+        }
+        if (action.startsWith("cmd:")) {
+            String cmd = action.substring(4);
+            player.closeInventory();
+            // map friendly names
+            if (cmd.equals("usage-kick")) { player.sendMessage("§cUsage: /kick <player> [reason]"); return; }
+            if (cmd.equals("usage-getoff")) { player.sendMessage("§cUsage: /getoff <player> <time> [reason]"); return; }
+            if (cmd.equals("usage-mute")) { player.sendMessage("§cUsage: /mute <player> [time] [reason]"); return; }
+            if (cmd.equals("usage-freeze")) { player.sendMessage("§cUsage: /freeze <player>"); return; }
+            if (cmd.equals("usage-warn")) { player.sendMessage("§cUsage: /warn <player> <reason>"); return; }
+            if (cmd.equals("unmute")) { player.sendMessage("§cUsage: /unmute <player>"); return; }
+            if (cmd.equals("tphere")) { player.sendMessage("§cUsage: /tphere <player>"); return; }
+            if (cmd.equals("spawn")) { Bukkit.dispatchCommand(player, "spawn"); return; }
+            if (cmd.equals("clearentities")) { Bukkit.dispatchCommand(player, "clearentities"); return; }
+            if (cmd.equals("tps")) { Bukkit.dispatchCommand(player, "tps"); return; }
+            if (cmd.equals("announce")) { announcementManager.broadcastNow(); player.sendMessage("§aAnnounced."); return; }
+            Bukkit.dispatchCommand(player, cmd);
+            return;
+        }
+        if (action.startsWith("pcmd:")) {
+            String cmd = action.substring(5);
+            player.closeInventory();
+            Bukkit.dispatchCommand(player, cmd);
+            return;
+        }
+        if (action.startsWith("info:")) {
+            player.sendMessage("§e" + action.substring(5));
+            return;
+        }
+    }
 
     public boolean isFrozen(java.util.UUID uuid) { return frozen.contains(uuid); }
     public void setFrozen(java.util.UUID uuid, boolean state) {

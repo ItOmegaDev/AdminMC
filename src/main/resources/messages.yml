@@ -79,3 +79,16 @@ check-already-running: "&cCheck already running for {player}"
 check-result: "&aCheck {player}: {result} ({count} flags) - {findings}"
 check-alert: "&e[Check] {player} flagged: {findings}"
 check-auto-alert: "&e[AutoCheck] {player} flagged: {findings}"
+# alt detection
+alt-detected: "&e[Alt] {player} from {ip} (accounts: {accounts})"
+# chat
+chat-blocked: "&cMessage blocked: {reason}"
+# sudo
+usage-sudo: "&cUsage: /sudo <player> <command>"
+sudo-success: "&aExecuted as {player}: {command}"
+# clearentities
+clearentities-done: "&aRemoved {count} entities"
+# announce
+announce-done: "&aAnnouncement sent"
+# tps
+# endersee uses invsee-opened

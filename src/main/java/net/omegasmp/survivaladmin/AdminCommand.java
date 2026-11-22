@@ -25,6 +25,11 @@ public class AdminCommand implements CommandExecutor, org.bukkit.command.TabComp
             return true;
         }
 
+        if (command.getName().equalsIgnoreCase("admin")) {
+            plugin.getAdminGUI().openMain(player);
+            return true;
+        }
+
         player.sendMessage(plugin.getConfigManager().msg("help-header"));
         player.sendMessage("§7/staff <player> §f- grant Staff role");
         player.sendMessage("§7/unstaff <player> §f- remove Staff role");

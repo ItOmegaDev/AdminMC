@@ -115,6 +115,30 @@ commands:
     description: Check a player for hacks
     usage: /check <player>
     permission: survivaladmin.staff
+  sudo:
+    description: Execute command as player
+    usage: /sudo <player> <command>
+    permission: survivaladmin.staff
+  tempmute:
+    description: Temporarily mute a player
+    usage: /tempmute <player> <time> [reason]
+    permission: survivaladmin.staff
+  clearentities:
+    description: Clear nearby entities
+    usage: /clearentities [radius]
+    permission: survivaladmin.staff
+  tps:
+    description: Show TPS and memory
+    usage: /tps
+    permission: survivaladmin.staff
+  announce:
+    description: Broadcast announcement now
+    usage: /announce
+    permission: survivaladmin.staff
+  endersee:
+    description: View player ender chest
+    usage: /endersee <player>
+    permission: survivaladmin.staff
 
 permissions:
   survivaladmin.owner:
@@ -185,4 +209,7 @@ permissions:
     default: false
   survivaladmin.check:
     description: Check players for hacks
+    default: false
+  survivaladmin.sudo:
+    description: Execute commands as other players
     default: false

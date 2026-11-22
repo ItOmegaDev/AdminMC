@@ -32,6 +32,11 @@ public class EventListener implements Listener {
         String role = plugin.getRoleManager().getRole(player);
         event.setJoinMessage(plugin.getConfigManager().msgRaw("join").replace("{player}", rolePrefix(role) + player.getName()));
 
+        // Alt detection
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (player.isOnline()) plugin.getAltDetectionManager().onJoin(player);
+        }, 40L);
+
         // Auto anti-cheat check on join (behavior only by default)
         int delay = plugin.getConfigManager().getInt("anticheat.auto-check-on-join.delay-ticks", 100);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -107,13 +112,25 @@ public class EventListener implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         MuteManager.MuteEntry me = plugin.getMuteManager().getMute(player);
-        if (me == null) return;
-        event.setCancelled(true);
-        long rem = plugin.getMuteManager().remainingMillis(player);
-        String timeStr = (rem < 0) ? "permanent" : formatMillis(rem);
-        player.sendMessage(plugin.getConfigManager().msg("muted-chat")
-                .replace("{time}", timeStr)
-                .replace("{reason}", me.reason == null ? "" : me.reason));
+        if (me != null) {
+            event.setCancelled(true);
+            long rem = plugin.getMuteManager().remainingMillis(player);
+            String timeStr = (rem < 0) ? "permanent" : formatMillis(rem);
+            player.sendMessage(plugin.getConfigManager().msg("muted-chat")
+                    .replace("{time}", timeStr).replace("{reason}", me.reason == null ? "" : me.reason));
+            return;
+        }
+
+        ChatManager.FilterResult fr = plugin.getChatManager().filter(player, event.getMessage());
+        if (fr.blocked) {
+            event.setCancelled(true);
+            player.sendMessage(plugin.getConfigManager().msg("chat-blocked")
+                    .replace("{reason}", fr.reason == null ? "" : fr.reason));
+            return;
+        }
+        if (fr.message != null && !fr.message.equals(event.getMessage())) {
+            event.setMessage(fr.message);
+        }
     }
 
     // --- Freeze: block movement ---

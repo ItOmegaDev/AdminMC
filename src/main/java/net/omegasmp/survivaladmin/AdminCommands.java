@@ -40,16 +40,20 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             case "time" -> doTime(player, args);
             case "weather" -> doWeather(player, args);
             case "invsee", "inv" -> doInvsee(player, args);
+            case "endersee" -> doEndersee(player, args);
             case "getoff" -> doGetoff(player, args);
             case "invis", "vanish" -> doVanish(player);
             case "kick" -> doKick(player, args);
-            case "mute" -> doMute(player, args);
+            case "mute", "tempmute" -> doMute(player, args);
             case "unmute" -> doUnmute(player, args);
             case "freeze" -> doFreeze(player, args);
             case "unfreeze" -> doUnfreeze(player, args);
             case "clearchat", "cc" -> doClearChat(player);
             case "broadcast", "bc" -> doBroadcast(player, args);
             case "warn" -> doWarn(player, args);
+            case "clearentities" -> doClearEntities(player, args);
+            case "tps" -> doTps(player);
+            case "announce" -> doAnnounce(player, args);
         }
 
         return true;
@@ -472,6 +476,67 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             Bukkit.broadcastMessage(plugin.getConfigManager().msg("auto-ban-broadcast")
                     .replace("{player}", target.getName()).replace("{count}", String.valueOf(count)));
         }
+    }
+
+    // ---- endersee ----
+    private void doEndersee(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.invsee")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        if (args.length < 1) {
+            player.sendMessage(plugin.getConfigManager().msg("usage-inv"));
+            return;
+        }
+        Player target = Bukkit.getPlayer(args[0]);
+        if (target == null) {
+            player.sendMessage(plugin.getConfigManager().msg("player-not-found").replace("{player}", args[0]));
+            return;
+        }
+        player.openInventory(target.getEnderChest());
+        player.sendMessage(plugin.getConfigManager().msg("invsee-opened").replace("{player}", target.getName()));
+    }
+
+    // ---- clearentities ----
+    private void doClearEntities(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.clearchat")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        int radius = 50;
+        if (args.length > 0) {
+            try { radius = Integer.parseInt(args[0]); } catch (NumberFormatException ignored) { }
+        }
+        int count = 0;
+        for (org.bukkit.entity.Entity e : player.getNearbyEntities(radius, radius, radius)) {
+            if (e instanceof org.bukkit.entity.Item || e instanceof org.bukkit.entity.ExperienceOrb) {
+                e.remove();
+                count++;
+            }
+        }
+        player.sendMessage(plugin.getConfigManager().msgRaw("clearentities-done").replace("{count}", String.valueOf(count)));
+    }
+
+    // ---- tps ----
+    private void doTps(Player player) {
+        if (!plugin.getRoleManager().isStaff(player)) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        double tps = Bukkit.getTPS()[0];
+        long memUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1024;
+        long memMax = Runtime.getRuntime().maxMemory() / 1024 / 1024;
+        player.sendMessage("§6TPS: §f" + String.format("%.2f", tps) + " §7| §6Mem: §f" + memUsed + "MB / " + memMax + "MB");
+    }
+
+    // ---- announce ----
+    private void doAnnounce(Player player, String[] args) {
+        if (!plugin.getRoleManager().hasPermission(player, "survivaladmin.broadcast")) {
+            player.sendMessage(plugin.getConfigManager().msg("no-permission"));
+            return;
+        }
+        plugin.getAnnouncementManager().broadcastNow();
+        player.sendMessage(plugin.getConfigManager().msg("announce-done"));
     }
 
     // ---- helpers ----

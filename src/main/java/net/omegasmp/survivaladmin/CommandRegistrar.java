@@ -27,10 +27,14 @@ public class CommandRegistrar {
 
         // Anti-cheat check command
         register("check", new CheckCommand(plugin));
+
+        // Sudo command (owner-level)
+        register("sudo", new SudoCommand(plugin));
+
         // Admin commands (staff+)
-        String[] adminCommands = {"tp", "gm", "gamemode", "time", "weather", "invsee", "inv",
-                "getoff", "invis", "vanish", "kick", "mute", "unmute", "freeze", "unfreeze",
-                "clearchat", "cc", "broadcast", "bc", "warn"};
+        String[] adminCommands = {"tp", "gm", "gamemode", "time", "weather", "invsee", "inv", "endersee",
+                "getoff", "invis", "vanish", "kick", "mute", "tempmute", "unmute", "freeze", "unfreeze",
+                "clearchat", "cc", "broadcast", "bc", "warn", "clearentities", "tps", "announce"};
         for (String cmd : adminCommands) {
             org.bukkit.command.PluginCommand pc = plugin.getCommand(cmd);
             if (pc != null) {
