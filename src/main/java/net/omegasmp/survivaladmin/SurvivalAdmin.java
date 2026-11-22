@@ -78,8 +78,11 @@ public final class SurvivalAdmin extends JavaPlugin {
             @org.bukkit.event.EventHandler
             public void onInventoryClick(org.bukkit.event.inventory.InventoryClickEvent e) {
                 if (!(e.getWhoClicked() instanceof Player player)) return;
-                if (!adminGUI.isOpen(player)) return;
+                if (!adminGUI.isOpen(player)) {
+                    return;
+                }
                 e.setCancelled(true);
+                getLogger().info("GUI click by " + player.getName() + " slot=" + e.getRawSlot());
                 int slot = e.getRawSlot();
                 if (slot < 0 || slot >= e.getInventory().getSize()) return;
                 Map<Integer, String> acts = adminGUI.currentActions(player);

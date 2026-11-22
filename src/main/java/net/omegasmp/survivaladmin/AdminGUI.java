@@ -47,6 +47,7 @@ public class AdminGUI {
 
     // ---- Main menu ----
     public void openMain(Player p) {
+        plugin.getLogger().info("AdminGUI openMain for " + p.getName());
         Inventory inv = Bukkit.createInventory(null, 54, ChatColor.DARK_PURPLE + "SurvivalAdmin");
         Map<Integer, String> act = new HashMap<>();
 
