@@ -2,6 +2,7 @@ package net.omegasmp.survivaladmin;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collections;
@@ -55,18 +56,25 @@ public class VanishManager {
         if (player == null) return;
         if (state) {
             vanished.add(player.getUniqueId());
+            // TAB reads this metadata key to hide vanished players from its tab
+            // list, nametags and below-name (same convention as PremiumVanish).
+            player.setMetadata("vanished", new FixedMetadataValue(plugin, true));
             player.setInvisible(true);
             player.setCollidable(false);
             player.setAffectsSpawning(false);
 
             for (Player viewer : Bukkit.getOnlinePlayers()) {
-                if (viewer.equals(player)) continue;
-                if (!canSeeVanished(viewer)) {
+                if (viewer.equals(player)) {
+                    // Remove the vanished player from their own tab list too.
+                    unlist(viewer, player);
+                } else if (!canSeeVanished(viewer)) {
+                    unlist(viewer, player);
                     viewer.hidePlayer(plugin, player);
                 }
             }
         } else {
             vanished.remove(player.getUniqueId());
+            player.removeMetadata("vanished", plugin);
             if (!player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                 player.setInvisible(false);
             }
@@ -74,6 +82,8 @@ public class VanishManager {
             player.setAffectsSpawning(true);
 
             for (Player viewer : Bukkit.getOnlinePlayers()) {
+                list(viewer, player);
+                if (viewer.equals(player)) continue;
                 viewer.showPlayer(plugin, player);
             }
         }
@@ -88,7 +98,34 @@ public class VanishManager {
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online.equals(joiner)) continue;
             if (isVanished(online) && !canSeeVanished(joiner)) {
+                unlist(joiner, online);
                 joiner.hidePlayer(plugin, online);
+            }
+        }
+    }
+
+    /**
+     * Re-applies vanish every few seconds. TAB and other tab-list plugins can
+     * re-add entries after we remove them, so we keep enforcing the state.
+     */
+    public void tick() {
+        if (vanished.isEmpty()) return;
+        for (UUID id : new HashSet<>(vanished)) {
+            Player player = Bukkit.getPlayer(id);
+            if (player == null) {
+                vanished.remove(id);
+                continue;
+            }
+            for (Player viewer : Bukkit.getOnlinePlayers()) {
+                if (viewer.equals(player)) {
+                    unlist(viewer, player);
+                    continue;
+                }
+                if (canSeeVanished(viewer)) continue;
+                if (viewer.canSee(player)) {
+                    viewer.hidePlayer(plugin, player);
+                }
+                unlist(viewer, player);
             }
         }
     }
@@ -96,6 +133,26 @@ public class VanishManager {
     /** Drops vanish state without restoring visibility (the player is leaving). */
     public void forget(Player player) {
         if (player != null) vanished.remove(player.getUniqueId());
+    }
+
+    /** Removes {@code target} from {@code viewer}'s tab list. */
+    private void unlist(Player viewer, Player target) {
+        try {
+            viewer.unlistPlayer(target);
+        } catch (Throwable t) {
+            plugin.getLogger().warning("Could not unlist " + target.getName() + " for "
+                    + viewer.getName() + ": " + t.getMessage());
+        }
+    }
+
+    /** Restores {@code target} in {@code viewer}'s tab list. */
+    private void list(Player viewer, Player target) {
+        try {
+            viewer.listPlayer(target);
+        } catch (Throwable t) {
+            plugin.getLogger().warning("Could not list " + target.getName() + " for "
+                    + viewer.getName() + ": " + t.getMessage());
+        }
     }
 
     /**

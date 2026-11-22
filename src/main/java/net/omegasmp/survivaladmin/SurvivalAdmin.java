@@ -110,6 +110,11 @@ public final class SurvivalAdmin extends JavaPlugin {
         new CommandRegistrar(this).registerAll();
         announcementManager.start();
 
+        // Keep vanished players out of tab lists even if TAB or another plugin re-adds them.
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+            if (vanishManager != null) vanishManager.tick();
+        }, 40L, 40L);
+
         getLogger().info("SurvivalAdmin v2.4.0 enabled - Made by Omega (@ItOmega)");
     }
 
