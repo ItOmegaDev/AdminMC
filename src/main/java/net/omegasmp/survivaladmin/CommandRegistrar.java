@@ -25,6 +25,10 @@ public class CommandRegistrar {
         register("admin", new AdminCommand(plugin));
         register("help", new AdminCommand(plugin));
 
+        // Anti-cheat check command
+        register("check", new CheckCommand(plugin));
+        register("checkhacks", new CheckCommand(plugin));
+
         // Admin commands (staff+)
         String[] adminCommands = {"tp", "gm", "gamemode", "time", "weather", "invsee", "inv",
                 "getoff", "invis", "vanish", "kick", "mute", "unmute", "freeze", "unfreeze",

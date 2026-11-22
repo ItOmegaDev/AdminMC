@@ -31,6 +31,12 @@ public class EventListener implements Listener {
         plugin.getRoleManager().migrateOnJoin(player);
         String role = plugin.getRoleManager().getRole(player);
         event.setJoinMessage(plugin.getConfigManager().msgRaw("join").replace("{player}", rolePrefix(role) + player.getName()));
+
+        // Auto anti-cheat check on join (behavior only by default)
+        int delay = plugin.getConfigManager().getInt("anticheat.auto-check-on-join.delay-ticks", 100);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (player.isOnline()) plugin.getAntiCheatManager().autoCheck(player);
+        }, delay);
     }
 
     private String rolePrefix(String role) {

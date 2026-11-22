@@ -1,5 +1,5 @@
 name: SurvivalAdmin
-version: 2.2.0
+version: 2.4.0
 main: net.omegasmp.survivaladmin.SurvivalAdmin
 api-version: '1.21'
 author: Omega
@@ -111,6 +111,14 @@ commands:
     description: Warn a player
     usage: /warn <player> <reason>
     permission: survivaladmin.staff
+  check:
+    description: Check a player for hacks
+    usage: /check <player>
+    permission: survivaladmin.staff
+  checkhacks:
+    description: Check a player for hacks (alias)
+    usage: /checkhacks <player>
+    permission: survivaladmin.staff
 
 permissions:
   survivaladmin.owner:
@@ -178,4 +186,7 @@ permissions:
     default: false
   survivaladmin.warn:
     description: Warn players
+    default: false
+  survivaladmin.check:
+    description: Check players for hacks
     default: false

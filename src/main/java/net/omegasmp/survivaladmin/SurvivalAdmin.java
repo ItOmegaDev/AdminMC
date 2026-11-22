@@ -43,6 +43,7 @@ public final class SurvivalAdmin extends JavaPlugin {
     private Config config;
     private MuteManager muteManager;
     private WarnManager warnManager;
+    private AntiCheatManager antiCheatManager;
 
     // Frozen players (in-memory, cleared on restart)
     private final Set<java.util.UUID> frozen = new java.util.HashSet<>();
@@ -56,14 +57,21 @@ public final class SurvivalAdmin extends JavaPlugin {
         this.commandBlocker = new CommandBlocker(this);
         this.muteManager = new MuteManager(this);
         this.warnManager = new WarnManager(this);
+        this.antiCheatManager = new AntiCheatManager(this);
 
         Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
         Bukkit.getPluginManager().registerEvents(this.commandBlocker, this);
         Bukkit.getPluginManager().registerEvents(new TabCompleteBlocker(this), this);
+        Bukkit.getPluginManager().registerEvents(new org.bukkit.event.Listener() {
+            @org.bukkit.event.EventHandler
+            public void onSignChange(org.bukkit.event.block.SignChangeEvent e) {
+                if (antiCheatManager != null) antiCheatManager.handleSignChange(e);
+            }
+        }, this);
 
         new CommandRegistrar(this).registerAll();
 
-        getLogger().info("SurvivalAdmin v2.2.0 enabled — Made by Omega (@ItOmega)");
+        getLogger().info("SurvivalAdmin v2.4.0 enabled — Made by Omega (@ItOmega)");
     }
 
     @Override
@@ -83,6 +91,7 @@ public final class SurvivalAdmin extends JavaPlugin {
     public Config getConfigManager() { return config; }
     public MuteManager getMuteManager() { return muteManager; }
     public WarnManager getWarnManager() { return warnManager; }
+    public AntiCheatManager getAntiCheatManager() { return antiCheatManager; }
 
     public boolean isFrozen(java.util.UUID uuid) { return frozen.contains(uuid); }
     public void setFrozen(java.util.UUID uuid, boolean state) {
