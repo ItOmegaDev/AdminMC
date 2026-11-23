@@ -8,10 +8,10 @@ import org.bukkit.entity.Player;
 
 public class RoleCommand implements CommandExecutor, org.bukkit.command.TabCompleter {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
     private final String action;
 
-    public RoleCommand(SurvivalAdmin plugin, String action) {
+    public RoleCommand(AdminMC plugin, String action) {
         this.plugin = plugin;
         this.action = action;
     }

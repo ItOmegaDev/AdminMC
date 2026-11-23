@@ -4,11 +4,11 @@ import org.bukkit.Bukkit;
 
 public class AnnouncementManager {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
     private int index = 0;
     private int taskId = -1;
 
-    public AnnouncementManager(SurvivalAdmin plugin) {
+    public AnnouncementManager(AdminMC plugin) {
         this.plugin = plugin;
     }
 
@@ -33,7 +33,12 @@ public class AnnouncementManager {
         String msg = msgs.get(index % msgs.size());
         index++;
         String prefix = plugin.getConfigManager().get("announcements.prefix", "&6[Announcement] ");
-        Bukkit.broadcastMessage(prefix.replace("&", "§") + msg.replace("&", "§"));
+        String message = prefix.replace("&", "§") + msg.replace("&", "§");
+        for (org.bukkit.entity.Player p : Bukkit.getOnlinePlayers()) {
+            if (plugin.getRoleManager().isStaff(p)) {
+                p.sendMessage(message);
+            }
+        }
     }
 
     public void broadcastNow() {

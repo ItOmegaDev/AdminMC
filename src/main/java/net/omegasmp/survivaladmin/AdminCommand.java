@@ -7,9 +7,9 @@ import org.bukkit.entity.Player;
 
 public class AdminCommand implements CommandExecutor, org.bukkit.command.TabCompleter {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public AdminCommand(SurvivalAdmin plugin) {
+    public AdminCommand(AdminMC plugin) {
         this.plugin = plugin;
     }
 

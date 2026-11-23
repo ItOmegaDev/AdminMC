@@ -30,7 +30,7 @@ public class AdminGUI {
     private static final Material FILLER = Material.BLACK_STAINED_GLASS_PANE;
     private static final Material FRAME = Material.GRAY_STAINED_GLASS_PANE;
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
     private final Map<UUID, Session> sessions = new HashMap<>();
 
     private static final class Session {
@@ -45,7 +45,7 @@ public class AdminGUI {
         }
     }
 
-    public AdminGUI(SurvivalAdmin plugin) {
+    public AdminGUI(AdminMC plugin) {
         this.plugin = plugin;
     }
 
@@ -77,11 +77,11 @@ public class AdminGUI {
     // MAIN
     // ================================================================
     public void openMain(Player p) {
-        Inventory inv = base("SurvivalAdmin");
+        Inventory inv = base("AdminMC");
         Map<Integer, String> act = new HashMap<>();
 
-        item(inv, act, 4, Material.NETHER_STAR, "&d&lSurvivalAdmin",
-                "info:SurvivalAdmin v2.4.0 by Omega",
+        item(inv, act, 4, Material.NETHER_STAR, "&d&lAdminMC",
+                "info:" + plugin.getDescription().getName() + " v" + plugin.getDescription().getVersion() + " by Omega",
                 "&7Панель керування сервером",
                 "&8Онлайн: &f" + Bukkit.getOnlinePlayers().size(),
                 "&8Ваша роль: &f" + plugin.getRoleManager().getRole(p));
@@ -514,14 +514,22 @@ public class AdminGUI {
         p.openInventory(inv);
     }
 
-    /** Fill the whole inventory with the dark filler and a light border. */
+    /** Fill the whole inventory with the dark filler and a clean rectangular frame. */
     private void fill(Inventory inv) {
-        for (int i = 0; i < inv.getSize(); i++) {
+        int size = inv.getSize();
+        // Everything starts as dark filler
+        for (int i = 0; i < size; i++) {
             inv.setItem(i, pane(FILLER));
         }
-        for (int slot : new int[]{0, 1, 2, 3, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44,
-                45, 46, 47, 48, 50, 51, 52, 53}) {
-            inv.setItem(slot, pane(FRAME));
+        // Top and bottom rows: full frame border
+        for (int i = 0; i < 9; i++) {
+            inv.setItem(i, pane(FRAME));              // top row (0-8)
+            inv.setItem(size - 9 + i, pane(FRAME));   // bottom row (45-53)
+        }
+        // Left and right columns: frame (corners already set by the rows above)
+        for (int row = 1; row < 5; row++) {
+            inv.setItem(row * 9, pane(FRAME));        // left column (9, 18, 27, 36)
+            inv.setItem(row * 9 + 8, pane(FRAME));    // right column (17, 26, 35, 44)
         }
     }
 

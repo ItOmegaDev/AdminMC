@@ -29,9 +29,9 @@ import java.util.Set;
  */
 public class TabCompleteBlocker implements Listener {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public TabCompleteBlocker(SurvivalAdmin plugin) {
+    public TabCompleteBlocker(AdminMC plugin) {
         this.plugin = plugin;
     }
 
@@ -151,7 +151,7 @@ public class TabCompleteBlocker implements Listener {
             if (!normalized.isEmpty()) allowed.add(normalized);
         }
 
-        // Staff/owners also see SurvivalAdmin commands they are allowed to run.
+        // Staff/owners also see AdminMC commands they are allowed to run.
         if (plugin.getRoleManager().isStaff(player)) {
             for (String commandName : plugin.getDescription().getCommands().keySet()) {
                 org.bukkit.command.PluginCommand pluginCommand = plugin.getCommand(commandName);

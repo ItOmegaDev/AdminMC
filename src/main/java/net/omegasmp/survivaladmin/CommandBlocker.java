@@ -8,9 +8,9 @@ import java.util.List;
 
 public class CommandBlocker implements Listener {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public CommandBlocker(SurvivalAdmin plugin) {
+    public CommandBlocker(AdminMC plugin) {
         this.plugin = plugin;
     }
 

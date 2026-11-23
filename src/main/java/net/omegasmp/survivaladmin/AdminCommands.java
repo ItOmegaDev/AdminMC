@@ -13,9 +13,9 @@ import java.util.List;
 
 public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCompleter {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public AdminCommands(SurvivalAdmin plugin) {
+    public AdminCommands(AdminMC plugin) {
         this.plugin = plugin;
     }
 
@@ -271,7 +271,7 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
                 .replace("{player}", target.getName()).replace("{reason}", reason));
         player.sendMessage(plugin.getConfigManager().msg("kick-success")
                 .replace("{player}", target.getName()).replace("{reason}", reason));
-        Bukkit.broadcastMessage(plugin.getConfigManager().msg("kick-broadcast")
+        plugin.getConfigManager().broadcastStaffRaw(plugin.getConfigManager().msg("kick-broadcast")
                 .replace("{player}", target.getName()).replace("{admin}", player.getName()));
     }
 
@@ -396,7 +396,7 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         for (int i = 0; i < lines; i++) {
             Bukkit.broadcastMessage("");
         }
-        Bukkit.broadcastMessage(plugin.getConfigManager().msg("clearchat-done").replace("{admin}", player.getName()));
+        plugin.getConfigManager().broadcastStaffRaw(plugin.getConfigManager().msg("clearchat-done").replace("{admin}", player.getName()));
     }
 
     // ---- broadcast ----
@@ -416,7 +416,7 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
         }
         String msg = sb.toString().replace("&", "§");
         String prefix = plugin.getConfigManager().get("moderation.broadcast.prefix", "&6[Broadcast] ");
-        Bukkit.broadcastMessage(prefix.replace("&", "§") + msg);
+        plugin.getConfigManager().broadcastStaffRaw(prefix.replace("&", "§") + msg);
     }
 
     // ---- warn ----
@@ -446,7 +446,7 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
                 .replace("{count}", String.valueOf(count)).replace("{reason}", reason));
         player.sendMessage(plugin.getConfigManager().msg("warn-success")
                 .replace("{player}", target.getName()).replace("{count}", String.valueOf(count)));
-        Bukkit.broadcastMessage(plugin.getConfigManager().msg("warn-broadcast")
+        plugin.getConfigManager().broadcastStaffRaw(plugin.getConfigManager().msg("warn-broadcast")
                 .replace("{player}", target.getName()).replace("{admin}", player.getName()));
 
         if (threshold > 0 && count >= threshold) {
@@ -455,7 +455,7 @@ public class AdminCommands implements CommandExecutor, org.bukkit.command.TabCom
             org.bukkit.BanList banList = Bukkit.getBanList(org.bukkit.BanList.Type.NAME);
             banList.addBan(target.getName(), "Auto-ban: " + count + " warnings", new Date(System.currentTimeMillis() + dur), "Console");
             target.kickPlayer(plugin.getConfigManager().msg("auto-banned").replace("{count}", String.valueOf(count)));
-            Bukkit.broadcastMessage(plugin.getConfigManager().msg("auto-ban-broadcast")
+            plugin.getConfigManager().broadcastStaffRaw(plugin.getConfigManager().msg("auto-ban-broadcast")
                     .replace("{player}", target.getName()).replace("{count}", String.valueOf(count)));
         }
     }

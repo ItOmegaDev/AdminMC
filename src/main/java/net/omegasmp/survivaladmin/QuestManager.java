@@ -47,7 +47,7 @@ public class QuestManager {
         }
     }
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
     private final List<Quest> quests = new ArrayList<>();
     private final File file;
     private FileConfiguration data;
@@ -57,7 +57,7 @@ public class QuestManager {
     // player -> set of claimed quest ids
     private final Map<UUID, Set<String>> claimed = new HashMap<>();
 
-    public QuestManager(SurvivalAdmin plugin) {
+    public QuestManager(AdminMC plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), "quests.yml");
         loadQuests();

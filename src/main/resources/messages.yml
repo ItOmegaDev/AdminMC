@@ -1,4 +1,4 @@
-# SurvivalAdmin messages (English)
+# AdminMC messages (English)
 # Edit these; language is selected in config.yml (language: en)
 no-permission: "&cNo permission"
 command-blocked: "&cCommand blocked"
@@ -35,7 +35,7 @@ invalid-time: "&cInvalid time"
 invalid-weather: "&cInvalid weather. Use: clear, rain, thunder"
 invalid-time-format: "&cInvalid time format. Use: 1h, 1d, 30m, permanent"
 only-players: "&cOnly players"
-help-header: "&6=== SurvivalAdmin v2.0.0 ==="
+help-header: "&6=== AdminMC v3.0.0 ==="
 role-staff-given: "&aYou were given role &eStaff&a!"
 role-staff-removed: "&cYour role &eStaff&c was removed."
 role-owner-given: "&aYou were given role &6Owner&a!"

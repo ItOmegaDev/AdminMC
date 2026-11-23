@@ -1,9 +1,9 @@
-name: SurvivalAdmin
-version: 2.5.0
-main: net.omegasmp.survivaladmin.SurvivalAdmin
+name: AdminMC
+version: 3.0.0
+main: net.omegasmp.survivaladmin.AdminMC
 api-version: '1.21'
 author: Omega
-description: Professional administration plugin for Survival servers with role-based access control
+description: Professional administration plugin for OmegaMC survival servers with role-based access control
 website: https://t.me/ItOmega
 
 commands:
@@ -28,7 +28,7 @@ commands:
     usage: /admin
     permission: survivaladmin.staff
   help:
-    description: SurvivalAdmin help
+    description: AdminMC help
     usage: /help
     permission: survivaladmin.user
   list:
@@ -188,6 +188,7 @@ permissions:
   survivaladmin.unmute:
     description: Unmute players
     default: false
+
   survivaladmin.tp:
     description: Teleport to players
     default: false
@@ -205,15 +206,6 @@ permissions:
     default: false
   survivaladmin.vanish:
     description: Toggle invisibility
-    default: false
-  survivaladmin.kick:
-    description: Kick players
-    default: false
-  survivaladmin.mute:
-    description: Mute players
-    default: false
-  survivaladmin.unmute:
-    description: Unmute players
     default: false
   survivaladmin.freeze:
     description: Freeze players

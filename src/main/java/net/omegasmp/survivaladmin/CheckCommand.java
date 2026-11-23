@@ -12,9 +12,9 @@ import java.util.List;
 
 public class CheckCommand implements CommandExecutor, TabCompleter {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public CheckCommand(SurvivalAdmin plugin) {
+    public CheckCommand(AdminMC plugin) {
         this.plugin = plugin;
     }
 

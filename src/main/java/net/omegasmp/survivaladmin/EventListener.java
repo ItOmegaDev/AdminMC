@@ -23,9 +23,9 @@ import java.util.List;
 
 public class EventListener implements Listener {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public EventListener(SurvivalAdmin plugin) {
+    public EventListener(AdminMC plugin) {
         this.plugin = plugin;
     }
 
@@ -40,7 +40,8 @@ public class EventListener implements Listener {
         if (plugin.getVanishManager().isVanished(player)) {
             event.setJoinMessage(null);
         } else {
-            event.setJoinMessage(plugin.getConfigManager().msgRaw("join").replace("{player}", rolePrefix(role) + player.getName()));
+            event.setJoinMessage(null);
+            plugin.getConfigManager().broadcastStaff("join", "{player}", rolePrefix(role) + player.getName());
         }
 
         // Alt detection
@@ -72,7 +73,8 @@ public class EventListener implements Listener {
             plugin.getVanishManager().forget(player);
             return;
         }
-        event.setQuitMessage(plugin.getConfigManager().msgRaw("quit").replace("{player}", player.getName()));
+        event.setQuitMessage(null);
+        plugin.getConfigManager().broadcastStaff("quit", "{player}", player.getName());
     }
 
     @EventHandler
@@ -85,11 +87,11 @@ public class EventListener implements Listener {
         Player killer = player.getKiller();
         if (killer != null) {
             plugin.getQuestManager().addProgress(killer, "kill", event.getEntity().getType().name(), 1);
-            event.setDeathMessage(plugin.getConfigManager().msg("kill")
-                    .replace("{player}", player.getName())
-                    .replace("{killer}", killer.getName()));
+            event.setDeathMessage(null);
+            plugin.getConfigManager().broadcastStaff("kill", "{player}", player.getName(), "{killer}", killer.getName());
         } else {
-            event.setDeathMessage(plugin.getConfigManager().msg("death").replace("{player}", player.getName()));
+            event.setDeathMessage(null);
+            plugin.getConfigManager().broadcastStaff("death", "{player}", player.getName());
         }
     }
 
@@ -101,7 +103,8 @@ public class EventListener implements Listener {
             plugin.getVanishManager().forget(player);
             return;
         }
-        event.setLeaveMessage(plugin.getConfigManager().msg("kick").replace("{player}", player.getName()));
+        event.setLeaveMessage(null);
+        plugin.getConfigManager().broadcastStaff("kick", "{player}", player.getName());
     }
 
     @EventHandler
@@ -111,9 +114,7 @@ public class EventListener implements Listener {
         if (plugin.getVanishManager().isVanished(player)) return;
         String name = event.getAdvancement().getDisplay() == null ? event.getAdvancement().getKey().getKey()
                 : event.getAdvancement().getDisplay().title().toString();
-        Bukkit.broadcastMessage(plugin.getConfigManager().msg("advancement")
-                .replace("{player}", player.getName())
-                .replace("{advancement}", name));
+        plugin.getConfigManager().broadcastStaff("advancement", "{player}", player.getName(), "{advancement}", name);
     }
 
     @EventHandler(ignoreCancelled = true)

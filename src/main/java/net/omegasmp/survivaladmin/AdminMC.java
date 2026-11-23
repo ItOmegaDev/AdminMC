@@ -17,7 +17,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 /**
- * SurvivalAdmin - Professional administration plugin for Minecraft Survival servers.
+ * AdminMC - Professional administration plugin for Minecraft Survival servers.
  *
  * Features:
  * - Role-based access control (user, staff, owner) with permission inheritance
@@ -33,11 +33,11 @@ import java.util.*;
  * - YAML config
  *
  * Made by Omega (@ItOmega)
- * Version: 2.1.0
+ * Version: 3.0.0
  */
-public final class SurvivalAdmin extends JavaPlugin {
+public final class AdminMC extends JavaPlugin {
 
-    private static SurvivalAdmin instance;
+    private static AdminMC instance;
     private RoleManager roleManager;
     private CommandBlocker commandBlocker;
     private Config config;
@@ -120,7 +120,7 @@ public final class SurvivalAdmin extends JavaPlugin {
             if (vanishManager != null) vanishManager.tick();
         }, 40L, 40L);
 
-        getLogger().info("SurvivalAdmin v2.5.0 enabled - Made by Omega (@ItOmega)");
+        getLogger().info("AdminMC v3.0.0 enabled - Made by Omega (@ItOmega)");
     }
 
     @Override
@@ -129,12 +129,12 @@ public final class SurvivalAdmin extends JavaPlugin {
         if (this.muteManager != null) this.muteManager.save();
         if (this.warnManager != null) this.warnManager.save();
         try {
-            org.bukkit.Bukkit.broadcastMessage(this.config.msg("stop"));
+            this.config.broadcastStaff("stop");
         } catch (Exception ignored) { }
-        getLogger().info("SurvivalAdmin disabled.");
+        getLogger().info("AdminMC disabled.");
     }
 
-    public static SurvivalAdmin getInstance() { return instance; }
+    public static AdminMC getInstance() { return instance; }
     public RoleManager getRoleManager() { return roleManager; }
     public CommandBlocker getCommandBlocker() { return commandBlocker; }
     public Config getConfigManager() { return config; }

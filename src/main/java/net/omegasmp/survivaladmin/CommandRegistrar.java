@@ -6,9 +6,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandRegistrar {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public CommandRegistrar(SurvivalAdmin plugin) {
+    public CommandRegistrar(AdminMC plugin) {
         this.plugin = plugin;
     }
 

@@ -2,8 +2,8 @@
 set -euo pipefail
 cd "$(dirname "$(readlink -f "$0")")"
 
-VERSION="2.5.0"
-JAR_NAME="SurvivalAdmin-${VERSION}.jar"
+VERSION="3.0.0"
+JAR_NAME="AdminMC-${VERSION}.jar"
 BASE="$(pwd)"
 
 PAPER_API="${PAPER_API:-$(find "$BASE"/../../servers -name 'purpur-api-*.jar' 2>/dev/null | head -1)}"

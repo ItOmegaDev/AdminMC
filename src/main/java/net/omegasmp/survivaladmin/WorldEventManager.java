@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class WorldEventManager implements Listener {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
     private final Map<UUID, Double> bossDamage = new ConcurrentHashMap<>();
 
     private boolean bloodMoon = false;
@@ -46,7 +46,7 @@ public class WorldEventManager implements Listener {
     private long nextBossAt = 0L;
     private long bossSpawnedAt = 0L;
 
-    public WorldEventManager(SurvivalAdmin plugin) {
+    public WorldEventManager(AdminMC plugin) {
         this.plugin = plugin;
         scheduleTick();
         scheduleBossTimer();
@@ -110,7 +110,7 @@ public class WorldEventManager implements Listener {
         bloodMoonStartedDay = world.getFullTime() / 24000;
         String msg = plugin.getConfigManager().msgRaw("bloodmoon-start");
         if (msg == null || msg.isEmpty()) msg = "&c&lКривавий місяць зійшов! Моби посилені, дроп подвоєно.";
-        Bukkit.broadcastMessage(msg.replace("&", "§"));
+        plugin.getConfigManager().broadcastStaffRaw(msg.replace("&", "§"));
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendTitle("§4§lКРИВАВИЙ МІСЯЦЬ", "§7Моби посилені, дроп подвоєно", 10, 60, 10);
         }
@@ -124,7 +124,7 @@ public class WorldEventManager implements Listener {
         bloodMoon = false;
         String msg = plugin.getConfigManager().msgRaw("bloodmoon-end");
         if (msg == null || msg.isEmpty()) msg = "&aКривавий місяць завершився.";
-        Bukkit.broadcastMessage(msg.replace("&", "§"));
+        plugin.getConfigManager().broadcastStaffRaw(msg.replace("&", "§"));
         if (bloodMoonBar != null) {
             bloodMoonBar.removeAll();
             bloodMoonBar = null;
@@ -211,7 +211,7 @@ public class WorldEventManager implements Listener {
         msg = msg.replace("{x}", String.valueOf(loc.getBlockX()))
                  .replace("{y}", String.valueOf(loc.getBlockY()))
                  .replace("{z}", String.valueOf(loc.getBlockZ()));
-        Bukkit.broadcastMessage(msg.replace("&", "§"));
+        plugin.getConfigManager().broadcastStaffRaw(msg.replace("&", "§"));
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendTitle("§c§lСВІТОВИЙ БОС", "§7Координати: " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ(), 10, 60, 10);
         }
@@ -307,7 +307,7 @@ public class WorldEventManager implements Listener {
         String msg = plugin.getConfigManager().msgRaw("boss-dead");
         if (msg == null || msg.isEmpty()) msg = "&a&lСвітовий бос переможений! Топ: {top}";
         msg = msg.replace("{top}", top.toString().trim());
-        Bukkit.broadcastMessage(msg.replace("&", "§"));
+        plugin.getConfigManager().broadcastStaffRaw(msg.replace("&", "§"));
         for (Player p : Bukkit.getOnlinePlayers()) {
             p.sendTitle("§a§lБОС ПЕРЕМОЖЕНИЙ", "§7Дякуємо за участь", 10, 60, 10);
         }

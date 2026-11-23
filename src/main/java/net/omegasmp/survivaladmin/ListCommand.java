@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class ListCommand implements CommandExecutor {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public ListCommand(SurvivalAdmin plugin) {
+    public ListCommand(AdminMC plugin) {
         this.plugin = plugin;
     }
 

@@ -21,10 +21,10 @@ import java.util.UUID;
  */
 public class VanishManager {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
     private final Set<UUID> vanished = Collections.synchronizedSet(new HashSet<>());
 
-    public VanishManager(SurvivalAdmin plugin) {
+    public VanishManager(AdminMC plugin) {
         this.plugin = plugin;
     }
 

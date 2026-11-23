@@ -220,9 +220,9 @@ public class RoleManager {
         if ("owner".equals(role)) return true;
         // Permission inheritance: owner > staff > user
         if ("staff".equals(role)) {
-            if (((SurvivalAdmin) plugin).getConfigManager().hasPermission("user", perm)) return true;
+            if (((AdminMC) plugin).getConfigManager().hasPermission("user", perm)) return true;
         }
-        return ((SurvivalAdmin) plugin).getConfigManager().hasPermission(role, perm);
+        return ((AdminMC) plugin).getConfigManager().hasPermission(role, perm);
     }
 
     // Migrate legacy name-based roles on player join

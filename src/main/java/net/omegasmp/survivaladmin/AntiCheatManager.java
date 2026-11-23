@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Anti-cheat helper for SurvivalAdmin.
+ * Anti-cheat helper for AdminMC.
  *
  * Provides:
  *  - Behavior-based checks (gamemode, OP, permissions, ping, vanish, fly, speed, suspicious items, client brand).
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AntiCheatManager {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
     // UUID -> active check session
     private final Map<UUID, CheckSession> sessions = new ConcurrentHashMap<>();
@@ -165,7 +165,7 @@ public class AntiCheatManager {
             new String[]{"Meteor (alt)", "meteor.toggle"}
     );
 
-    public AntiCheatManager(SurvivalAdmin plugin) {
+    public AntiCheatManager(AdminMC plugin) {
         this.plugin = plugin;
     }
 

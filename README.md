@@ -2,7 +2,7 @@
 
 **Professional administration plugin for Minecraft Survival servers with role-based access control.**
 
-One jar, Paper/Purpur/Spigot compatible. Made by **Omega** ([@ItOmega](https://t.me/ItOmega)) · [GitHub](https://github.com/ItOmegaDev/SurvivalAdmin) · [Releases](https://github.com/ItOmegaDev/SurvivalAdmin/releases)
+One jar, Paper/Purpur/Spigot compatible. Made by **Omega** ([@ItOmega](https://t.me/ItOmega)) · [GitHub](https://github.com/ItOmegaDev/AdminMC) · [Releases](https://github.com/ItOmegaDev/AdminMC/releases)
 
 ---
 
@@ -27,7 +27,7 @@ One jar, Paper/Purpur/Spigot compatible. Made by **Omega** ([@ItOmega](https://t
 
 ## 📦 Installation
 
-1. Download `SurvivalAdmin-2.0.0.jar` from [Releases](https://github.com/ItOmegaDev/SurvivalAdmin/releases)
+1. Download `SurvivalAdmin-2.0.0.jar` from [Releases](https://github.com/ItOmegaDev/AdminMC/releases)
 2. Put in `plugins/`
 3. Start server — `plugins/SurvivalAdmin/` is created with `config.yml`
 4. Edit `config.yml` to set owners and staff

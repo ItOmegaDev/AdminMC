@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ChatManager {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
     private static class PlayerChatState {
         long lastTime;
@@ -19,7 +19,7 @@ public class ChatManager {
 
     private final Map<UUID, PlayerChatState> states = new ConcurrentHashMap<>();
 
-    public ChatManager(SurvivalAdmin plugin) {
+    public ChatManager(AdminMC plugin) {
         this.plugin = plugin;
     }
 

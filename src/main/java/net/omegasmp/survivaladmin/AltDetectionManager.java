@@ -12,12 +12,12 @@ import java.util.*;
  */
 public class AltDetectionManager {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
     private final File file;
     // IP -> set of player names
     private final Map<String, Set<String>> ipToPlayers = new HashMap<>();
 
-    public AltDetectionManager(SurvivalAdmin plugin) {
+    public AltDetectionManager(AdminMC plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), "ips.json");
         load();

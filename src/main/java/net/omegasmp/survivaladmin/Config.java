@@ -1,5 +1,7 @@
 package net.omegasmp.survivaladmin;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -97,6 +99,49 @@ public class Config {
         }
         if (m == null) m = "";
         return m.replace("&", "§");
+    }
+
+    /** Send a message to a player only if they are staff+owner. No-op for regular users. */
+    public void msgStaff(Player p, String key) {
+        if (p == null) return;
+        if (!isStaff(p)) return;
+        p.sendMessage(msg(key));
+    }
+
+    /** Broadcast a plugin message to staff+owner players only. Supports {placeholders}. */
+    public void broadcastStaff(String key, Object... placeholders) {
+        String message = msg(key);
+        if (message.isEmpty()) return;
+        if (placeholders.length % 2 != 0) return;
+        for (int i = 0; i < placeholders.length; i += 2) {
+            message = message.replace("{" + placeholders[i] + "}", String.valueOf(placeholders[i + 1]));
+        }
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (isStaff(p)) {
+                p.sendMessage(message);
+            }
+        }
+    }
+
+    /** Send a raw (no prefix) message to a player only if they are staff+owner. */
+    public void msgStaffRaw(Player p, String key) {
+        if (p == null) return;
+        if (!isStaff(p)) return;
+        p.sendMessage(msgRaw(key));
+    }
+
+    /** Broadcast a raw (already-colored) plugin message to staff+owner players only. */
+    public void broadcastStaffRaw(String message) {
+        if (message == null || message.isEmpty()) return;
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (isStaff(p)) {
+                p.sendMessage(message);
+            }
+        }
+    }
+
+    private boolean isStaff(Player p) {
+        return ((AdminMC) plugin).getRoleManager().isStaff(p);
     }
 
     public void save() {

@@ -1,4 +1,4 @@
-name: Build SurvivalAdmin
+name: Build AdminMC
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SurvivalAdmin-jar
+          name: AdminMC-jar
           path: target/*.jar
           if-no-files-found: error
 EOF

@@ -12,9 +12,9 @@ import java.util.List;
 
 public class SudoCommand implements CommandExecutor, TabCompleter {
 
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public SudoCommand(SurvivalAdmin plugin) {
+    public SudoCommand(AdminMC plugin) {
         this.plugin = plugin;
     }
 

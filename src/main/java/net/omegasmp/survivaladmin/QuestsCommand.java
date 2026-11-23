@@ -6,9 +6,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class QuestsCommand implements CommandExecutor {
-    private final SurvivalAdmin plugin;
+    private final AdminMC plugin;
 
-    public QuestsCommand(SurvivalAdmin plugin) { this.plugin = plugin; }
+    public QuestsCommand(AdminMC plugin) { this.plugin = plugin; }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
