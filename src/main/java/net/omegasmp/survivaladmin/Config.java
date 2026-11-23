@@ -114,7 +114,11 @@ public class Config {
         if (message.isEmpty()) return;
         if (placeholders.length % 2 != 0) return;
         for (int i = 0; i < placeholders.length; i += 2) {
-            message = message.replace("{" + placeholders[i] + "}", String.valueOf(placeholders[i + 1]));
+            String placeholder = String.valueOf(placeholders[i]);
+            if (placeholder.startsWith("{") && placeholder.endsWith("}") && placeholder.length() > 2) {
+                placeholder = placeholder.substring(1, placeholder.length() - 1);
+            }
+            message = message.replace("{" + placeholder + "}", String.valueOf(placeholders[i + 1]));
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (isStaff(p)) {
